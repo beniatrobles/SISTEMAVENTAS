@@ -1,0 +1,92 @@
+-- Crear base de datos
+CREATE DATABASE IF NOT EXISTS bd_sistema_ventas;
+USE bd_sistema_ventas;
+
+-- ============================
+-- Tabla usuarios
+-- ============================
+CREATE TABLE tb_usuario (
+    idUsuario INT(11) AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(30) NOT NULL,
+    apellido VARCHAR(30) NOT NULL,
+    usuario VARCHAR(15) NOT NULL,
+    password VARCHAR(15) NOT NULL,
+    telefono VARCHAR(15) NOT NULL,
+    estado INT(1) NOT NULL
+) ENGINE=InnoDB;
+
+-- ============================
+-- Tabla cliente
+-- ============================
+CREATE TABLE tb_cliente (
+    idCliente INT(11) AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(30) NOT NULL,
+    apellido VARCHAR(30) NOT NULL,
+    cedula VARCHAR(15) NOT NULL,
+    telefono VARCHAR(15) NOT NULL,
+    direccion VARCHAR(100) NOT NULL,
+    estado INT(1) NOT NULL
+) ENGINE=InnoDB;
+
+-- ============================
+-- Tabla categoria
+-- ============================
+CREATE TABLE tb_categoria (
+    idCategoria INT(11) AUTO_INCREMENT PRIMARY KEY,
+    descripcion VARCHAR(200) NOT NULL,
+    estado INT(1) NOT NULL
+) ENGINE=InnoDB;
+
+-- ============================
+-- Tabla producto
+-- ============================
+CREATE TABLE tb_producto (
+    idProducto INT(11) AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    cantidad INT(11) NOT NULL,
+    precio DOUBLE(10,2) NOT NULL,
+    descripcion VARCHAR(200) NOT NULL,
+    porcentajeIva INT(2) NOT NULL,
+    idCategoria INT(11) NOT NULL,
+    estado INT(1) NOT NULL,
+    FOREIGN KEY (idCategoria) REFERENCES tb_categoria(idCategoria)
+        ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+-- ============================
+-- Tabla cabecera de venta
+-- ============================
+CREATE TABLE tb_cabecera_venta (
+    idCabeceraVenta INT(11) AUTO_INCREMENT PRIMARY KEY,
+    idCliente INT(11) NOT NULL,
+    valorPagar DOUBLE(10,2) NOT NULL,
+    fechaVenta DATE NOT NULL,
+    estado INT(1) NOT NULL,
+    FOREIGN KEY (idCliente) REFERENCES tb_cliente(idCliente)
+        ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+-- ============================
+-- Tabla detalle de venta
+-- ============================
+CREATE TABLE tb_detalle_venta (
+    idDetalleVenta INT(11) AUTO_INCREMENT PRIMARY KEY,
+    idCabeceraVenta INT(11) NOT NULL,
+    idProducto INT(11) NOT NULL,
+    cantidad INT(11) NOT NULL,
+    precioUnitario DOUBLE(10,2) NOT NULL,
+    subtotal DOUBLE(10,2) NOT NULL,
+    descuento DOUBLE(10,2) NOT NULL,
+    iva DOUBLE(10,2) NOT NULL,
+    totalPagar DOUBLE(10,2) NOT NULL,
+    estado INT(1) NOT NULL,
+    FOREIGN KEY (idCabeceraVenta) REFERENCES tb_cabecera_venta(idCabeceraVenta)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (idProducto) REFERENCES tb_producto(idProducto)
+        ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+-- ============================
+-- Ver todas las tablas
+-- ============================
+SHOW TABLES;

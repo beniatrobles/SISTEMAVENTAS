@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 04-09-2025 a las 12:36:07
+-- Tiempo de generación: 04-09-2025 a las 12:40:39
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -123,7 +123,8 @@ CREATE TABLE `tb_usuario` (
 -- Indices de la tabla `tb_cabecera_venta`
 --
 ALTER TABLE `tb_cabecera_venta`
-  ADD PRIMARY KEY (`idCabeceraVenta`);
+  ADD PRIMARY KEY (`idCabeceraVenta`),
+  ADD KEY `idCliente` (`idCliente`);
 
 --
 -- Indices de la tabla `tb_categoria`
@@ -141,13 +142,16 @@ ALTER TABLE `tb_cliente`
 -- Indices de la tabla `tb_detalle_venta`
 --
 ALTER TABLE `tb_detalle_venta`
-  ADD PRIMARY KEY (`idDetalleVenta`);
+  ADD PRIMARY KEY (`idDetalleVenta`),
+  ADD KEY `idCabeceraVenta` (`idCabeceraVenta`),
+  ADD KEY `idProducto` (`idProducto`);
 
 --
 -- Indices de la tabla `tb_producto`
 --
 ALTER TABLE `tb_producto`
-  ADD PRIMARY KEY (`idProducto`);
+  ADD PRIMARY KEY (`idProducto`),
+  ADD KEY `idCategoria` (`idCategoria`);
 
 --
 -- Indices de la tabla `tb_usuario`
@@ -194,6 +198,29 @@ ALTER TABLE `tb_producto`
 --
 ALTER TABLE `tb_usuario`
   MODIFY `idUsuario` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- Restricciones para tablas volcadas
+--
+
+--
+-- Filtros para la tabla `tb_cabecera_venta`
+--
+ALTER TABLE `tb_cabecera_venta`
+  ADD CONSTRAINT `tb_cabecera_venta_ibfk_1` FOREIGN KEY (`idCliente`) REFERENCES `tb_cliente` (`idCliente`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `tb_detalle_venta`
+--
+ALTER TABLE `tb_detalle_venta`
+  ADD CONSTRAINT `tb_detalle_venta_ibfk_1` FOREIGN KEY (`idCabeceraVenta`) REFERENCES `tb_cabecera_venta` (`idCabeceraVenta`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `tb_detalle_venta_ibfk_2` FOREIGN KEY (`idProducto`) REFERENCES `tb_producto` (`idProducto`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `tb_producto`
+--
+ALTER TABLE `tb_producto`
+  ADD CONSTRAINT `tb_producto_ibfk_1` FOREIGN KEY (`idCategoria`) REFERENCES `tb_categoria` (`idCategoria`) ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
