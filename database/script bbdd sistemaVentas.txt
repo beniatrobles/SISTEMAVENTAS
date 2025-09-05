@@ -15,6 +15,9 @@ CREATE TABLE tb_usuario (
     estado INT(1) NOT NULL
 ) ENGINE=InnoDB;
 
+
+insert into tb_usuario(nombre,apellido,usuario,password,telefono,estado) VALUES ("Edison","Zambrano","edison","12345","0987654321",1);
+
 -- ============================
 -- Tabla cliente
 -- ============================
