@@ -72,7 +72,7 @@ public class FrmLogin extends JFrame implements ActionListener {
 
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(new BorderLayout()); // 🔥 Aquí el cambio
+		contentPane.setLayout(new BorderLayout()); 
 		setContentPane(contentPane);
 
 		panel_Imagen = new JPanel();
@@ -149,6 +149,9 @@ public class FrmLogin extends JFrame implements ActionListener {
 
 			if (controlUsuario.loginUser(usuario)) {
 				JOptionPane.showMessageDialog(null, "Login correcto");
+				FrmMenu menu = new FrmMenu();
+				menu.setVisible(true);
+				this.dispose();
 
 			} else {
 				JOptionPane.showMessageDialog(null, "Usuario o password incorrectos");
