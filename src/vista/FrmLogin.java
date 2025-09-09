@@ -42,6 +42,7 @@ public class FrmLogin extends JFrame implements ActionListener {
 	private JLabel lblNewLabel_2;
 	private JLabel lblNewLabel_3;
 	private JButton btnIniciarSesion;
+	private FrmMenu menu;
 
 	/**
 	 * Launch the application.
@@ -149,7 +150,7 @@ public class FrmLogin extends JFrame implements ActionListener {
 
 			if (controlUsuario.loginUser(usuario)) {
 				JOptionPane.showMessageDialog(null, "Login correcto");
-				FrmMenu menu = new FrmMenu();
+				menu = new FrmMenu();
 				menu.setVisible(true);
 				this.dispose();
 
