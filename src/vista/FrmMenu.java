@@ -153,6 +153,7 @@ public class FrmMenu extends JFrame implements ActionListener {
 
         mntmGestionarCategorias = new JMenuItem("Gestionar Categorías",
             new ImageIcon(FrmMenu.class.getResource("/img/configuraciones.png")));
+        mntmGestionarCategorias.addActionListener(this);
         menuCategoria.add(mntmGestionarCategorias);
 
         // ================== MENU FACTURAR ==================
@@ -220,6 +221,12 @@ public class FrmMenu extends JFrame implements ActionListener {
 			InterCategoria interCategoria = new InterCategoria();
 			jDesktopPane_menu.add(interCategoria);
 			interCategoria.setVisible(true);
+		}
+		
+		if(e.getSource() == mntmGestionarCategorias) {
+			InterGestionarCategorias interGestionarCat = new InterGestionarCategorias();
+			jDesktopPane_menu.add(interGestionarCat);
+			interGestionarCat.setVisible(true);
 		}
 		
 	}
