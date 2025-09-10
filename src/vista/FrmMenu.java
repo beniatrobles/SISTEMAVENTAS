@@ -121,6 +121,7 @@ public class FrmMenu extends JFrame implements ActionListener {
 
         mntmGestionarProductos = new JMenuItem("Gestionar Productos",
             new ImageIcon(FrmMenu.class.getResource("/img/configuraciones.png")));
+        mntmGestionarProductos.addActionListener(this);
         menuProducto.add(mntmGestionarProductos);
 
         mntmActualizarStock = new JMenuItem("Actualizar Stock",
@@ -234,6 +235,14 @@ public class FrmMenu extends JFrame implements ActionListener {
 			InterProducto interProducto = new InterProducto();
 			jDesktopPane_menu.add(interProducto);
 			interProducto.setVisible(true);
+		}
+		
+		if(e.getSource() == mntmGestionarProductos) {
+			
+			InterGestionarProducto interGesProducto = new InterGestionarProducto();
+			jDesktopPane_menu.add(interGesProducto);
+			interGesProducto.setVisible(true);
+			
 		}
 		
 	}

@@ -42,6 +42,63 @@ public class Ctrl_Producto {
 	}
 	
 	
+	// Actualizar producto
+    public boolean actualizar(Producto objeto) {
+        boolean respuesta = false;
+        Connection cn = Conexion.conectar();
+
+        try {
+            PreparedStatement pst = cn.prepareStatement(
+                "UPDATE tb_producto SET nombre=?, cantidad=?, precio=?, descripcion=?, porcentajeIva=?, idCategoria=? " +
+                "WHERE idProducto=?"
+            );
+
+            pst.setString(1, objeto.getNombre());
+            pst.setInt(2, objeto.getCantidad());
+            pst.setDouble(3, objeto.getPrecio());
+            pst.setString(4, objeto.getDescripcion());
+            pst.setInt(5, objeto.getPorcentajeIva());
+            pst.setInt(6, objeto.getIdCategoria());
+            pst.setInt(7, objeto.getIdProducto());
+
+            if (pst.executeUpdate() > 0) {
+                respuesta = true;
+            }
+
+            cn.close();
+        } catch (SQLException e) {
+            System.out.println("Error al actualizar producto: " + e);
+        }
+
+        return respuesta;
+    }
+    
+    
+    // Eliminar producto
+    public boolean eliminar(int idProducto) {
+        boolean respuesta = false;
+        Connection cn = Conexion.conectar();
+
+        try {
+            PreparedStatement pst = cn.prepareStatement(
+                "DELETE FROM tb_producto WHERE idProducto=?"
+            );
+            pst.setInt(1, idProducto);
+
+            if (pst.executeUpdate() > 0) {
+                respuesta = true;
+            }
+
+            cn.close();
+        } catch (SQLException e) {
+            System.out.println("Error al eliminar producto: " + e);
+        }
+
+        return respuesta;
+    }
+
+	
+	
 	
 	// metodo para ver si existe ese producto
 		public boolean existeProducto(String producto) {
