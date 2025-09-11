@@ -8,7 +8,7 @@ import java.sql.Statement;
 
 import conexion.Conexion;
 import modelo.Cliente;
-import modelo.Producto;
+
 
 public class Ctrl_Cliente {
 	

@@ -126,6 +126,7 @@ public class FrmMenu extends JFrame implements ActionListener {
 
         mntmActualizarStock = new JMenuItem("Actualizar Stock",
             new ImageIcon(FrmMenu.class.getResource("/img/nuevo.png")));
+        mntmActualizarStock.addActionListener(this);
         menuProducto.add(mntmActualizarStock);
 
         // ================== MENU CLIENTE ==================
@@ -214,6 +215,7 @@ public class FrmMenu extends JFrame implements ActionListener {
 
         mntmCerrarSesion = new JMenuItem("Cerrar Sesión",
             new ImageIcon(FrmMenu.class.getResource("/img/cerrar-sesion.png")));
+        mntmCerrarSesion.addActionListener(this);
         menuCerrarSesion.add(mntmCerrarSesion);
     }
 
@@ -251,6 +253,12 @@ public class FrmMenu extends JFrame implements ActionListener {
 			
 		}
 		
+		if(e.getSource() == mntmActualizarStock) {
+			InterActualizarStock interStock = new InterActualizarStock();
+			jDesktopPane_menu.add(interStock);
+			interStock.setVisible(true);
+		}
+		
 		//Clientes
 		
 		if(e.getSource() == mntmNuevoCliente) {
@@ -264,6 +272,17 @@ public class FrmMenu extends JFrame implements ActionListener {
 			InterGestionarCliente interCliente = new InterGestionarCliente();
 			jDesktopPane_menu.add(interCliente);
 			interCliente.setVisible(true);
+		}
+		
+		
+		//cerrar sesion
+		
+		if(e.getSource() == mntmCerrarSesion) {
+			
+			FrmLogin login = new FrmLogin();
+			login.setVisible(true);
+			this.dispose();
+			
 		}
 		
 	}
