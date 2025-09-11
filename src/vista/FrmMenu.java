@@ -136,10 +136,12 @@ public class FrmMenu extends JFrame implements ActionListener {
 
         mntmNuevoCliente = new JMenuItem("Nuevo Cliente",
             new ImageIcon(FrmMenu.class.getResource("/img/nuevo-cliente.png")));
+        mntmNuevoCliente.addActionListener(this);
         menuCliente.add(mntmNuevoCliente);
 
         mntmGestionarClientes = new JMenuItem("Gestionar Clientes",
             new ImageIcon(FrmMenu.class.getResource("/img/configuraciones.png")));
+        mntmGestionarClientes.addActionListener(this);
         menuCliente.add(mntmGestionarClientes);
 
         // ================== MENU CATEGORIA ==================
@@ -219,6 +221,8 @@ public class FrmMenu extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		
+		
+		// Categorias
 		if(e.getSource()== mntmNuevaCategoria) {
 			InterCategoria interCategoria = new InterCategoria();
 			jDesktopPane_menu.add(interCategoria);
@@ -231,6 +235,8 @@ public class FrmMenu extends JFrame implements ActionListener {
 			interGestionarCat.setVisible(true);
 		}
 		
+		
+		//Productos 
 		if(e.getSource() == mntmNuevoProductos) {
 			InterProducto interProducto = new InterProducto();
 			jDesktopPane_menu.add(interProducto);
@@ -243,6 +249,21 @@ public class FrmMenu extends JFrame implements ActionListener {
 			jDesktopPane_menu.add(interGesProducto);
 			interGesProducto.setVisible(true);
 			
+		}
+		
+		//Clientes
+		
+		if(e.getSource() == mntmNuevoCliente) {
+			InterCliente interCliente = new InterCliente();
+			jDesktopPane_menu.add(interCliente);
+			interCliente.setVisible(true);
+			
+		}
+		
+		if(e.getSource() == mntmGestionarClientes) {
+			InterGestionarCliente interCliente = new InterGestionarCliente();
+			jDesktopPane_menu.add(interCliente);
+			interCliente.setVisible(true);
 		}
 		
 	}

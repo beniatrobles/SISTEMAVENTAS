@@ -116,8 +116,7 @@ public class InterProducto extends JInternalFrame implements ActionListener {
 		txt_nombreProducto.setColumns(10);
 
 		txt_cantidadProducto = new JTextField();
-		txt_cantidadProducto.setColumns(10);
-		txt_cantidadProducto.setBounds(140, 92, 211, 20);
+		txt_cantidadProducto.setColumns(10);		txt_cantidadProducto.setBounds(140, 92, 211, 20);
 		getContentPane().add(txt_cantidadProducto);
 
 		txt_precioProducto = new JTextField();
