@@ -102,10 +102,12 @@ public class FrmMenu extends JFrame implements ActionListener {
 
         mntmNuevoUsuario = new JMenuItem("Nuevo Usuario",
             new ImageIcon(FrmMenu.class.getResource("/img/nuevo-cliente.png")));
+        mntmNuevoUsuario.addActionListener(this);
         menuUsuario.add(mntmNuevoUsuario);
 
         mntmGestionarUsuarios = new JMenuItem("Gestionar Usuarios",
             new ImageIcon(FrmMenu.class.getResource("/img/configuraciones.png")));
+        mntmGestionarUsuarios.addActionListener(this);
         menuUsuario.add(mntmGestionarUsuarios);
 
         // ================== MENU PRODUCTO ==================
@@ -272,6 +274,23 @@ public class FrmMenu extends JFrame implements ActionListener {
 			InterGestionarCliente interCliente = new InterGestionarCliente();
 			jDesktopPane_menu.add(interCliente);
 			interCliente.setVisible(true);
+		}
+		
+		
+		//Usuarios
+		
+		if(e.getSource() == mntmNuevoUsuario) {
+			
+			InterUsuario interUsuario = new InterUsuario();
+			jDesktopPane_menu.add(interUsuario);
+			interUsuario.setVisible(true);
+			
+		}
+		
+		if(e.getSource() == mntmGestionarUsuarios) {
+			InterGestionarUsuarios interGestionarUsuarios = new InterGestionarUsuarios();
+			jDesktopPane_menu.add(interGestionarUsuarios);
+			interGestionarUsuarios.setVisible(true);
 		}
 		
 		

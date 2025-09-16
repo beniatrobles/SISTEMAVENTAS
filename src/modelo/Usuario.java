@@ -23,6 +23,24 @@ public class Usuario {
 	
 	
 	
+	
+	
+	public Usuario(int idUsuario, String nombre, String apellido, String usuario, String password, String telefono,
+			int estado) {
+		super();
+		this.idUsuario = idUsuario;
+		this.nombre = nombre;
+		this.apellido = apellido;
+		this.usuario = usuario;
+		this.password = password;
+		this.telefono = telefono;
+		this.estado = estado;
+	}
+
+
+
+
+
 	// set and get
 
 	public int getIdUsuario() {
