@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -26,10 +27,12 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.border.EtchedBorder;
+import javax.swing.table.DefaultTableModel;
 
 import conexion.Conexion;
+import modelo.DetalleVenta;
 
-public class InterFacturacion extends JInternalFrame implements ActionListener{
+public class InterFacturacion extends JInternalFrame implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
 
@@ -65,6 +68,27 @@ public class InterFacturacion extends JInternalFrame implements ActionListener{
 	private JButton btn_calcularCambio;
 	private JButton btn_registrarVenta;
 	private JButton btn_anadir;
+
+	private DefaultTableModel modeloDatosProductos;
+	
+	
+	// lista para detallesVenta de los productos
+	ArrayList<DetalleVenta> listaProductos = new ArrayList<DetalleVenta>();
+	private DetalleVenta producto;
+
+	private int idProducto = 0;
+	private String nombre = "";
+	private int cantidadProductoBBDD = 0;
+	private double precioUnitario = 0.0;
+	private int porcentajeIVA = 0;
+
+	private int cantidad = 0; // cantidad de productos a comprar
+	private double subTotal = 0.0; // cantidad por precio
+	private double descuento = 0.0;
+	private double iva = 0.0;
+	private double totalPagar = 0.0;
+
+	private int auxIdDetalle = 1; // id ddel detalle de venta
 
 	/**
 	 * Create the frame.
@@ -261,6 +285,28 @@ public class InterFacturacion extends JInternalFrame implements ActionListener{
 
 		cargarComboClientes();
 		cargarComboProductos();
+		inicializarTablaProducto();
+		listaTablaProductos();
+		
+
+	}
+
+	// metodo para inicializar la tabla de los productos
+
+	private void inicializarTablaProducto() {
+
+		modeloDatosProductos = new DefaultTableModel();
+		modeloDatosProductos.addColumn("Nº");
+		modeloDatosProductos.addColumn("Nombre");
+		modeloDatosProductos.addColumn("Cantidad");
+		modeloDatosProductos.addColumn("P Unitario");
+		modeloDatosProductos.addColumn("SubTotal");
+		modeloDatosProductos.addColumn("Descuento");
+		modeloDatosProductos.addColumn("IVA");
+		modeloDatosProductos.addColumn("Total a Pagar");
+		modeloDatosProductos.addColumn("Accion");
+
+		this.jTable_Productos.setModel(modeloDatosProductos);
 
 	}
 
@@ -314,38 +360,200 @@ public class InterFacturacion extends JInternalFrame implements ActionListener{
 
 	}
 
+	// metodo para validar que el usuario no ingrese caraacteres no numericos
+	private boolean validar(String valor) {
+		// TODO Auto-generated method stub
+		try {
+			int num = Integer.parseInt(valor);
+			return true;
+
+		} catch (NumberFormatException e) {
+			// TODO: handle exception
+
+			System.out.println("error al validar" + e);
+			return false;
+		}
+
+	}
+
+	// metodo para calcular iva
+	private double calcularIva(double precio, int porcentajeIva) {
+		int p_iva = porcentajeIva;
+
+		switch (p_iva) {
+		case 0:
+			iva = 0.0;
+			break;
+
+		case 4:
+			iva = (precio * cantidad) * 0.04;
+			break;
+
+		case 10:
+			iva = (precio * cantidad) * 0.10;
+			break;
+
+		case 21:
+			iva = (precio * cantidad) * 0.21;
+			break;
+
+		default:
+			break;
+
+		}
+		return iva;
+	}
+
+	// metodo para mostrar los datos del producto
+	private void DatosDelProducto() {
+
+		try {
+
+			String sql = "select * from tb_producto  where nombre = '" + this.comboBox_producto.getSelectedItem()
+					+ "'";
+			Connection cn = Conexion.conectar();
+			Statement st;
+			st = cn.createStatement();
+			ResultSet rs = st.executeQuery(sql);
+			while (rs.next()) {
+				idProducto = rs.getInt("idProducto");
+				nombre = rs.getString("nombre");
+				cantidadProductoBBDD = rs.getInt("cantidad");
+				precioUnitario = rs.getDouble("precio");
+				porcentajeIVA = rs.getInt("porcentajeIva");
+
+				this.calcularIva(precioUnitario, porcentajeIVA);
+
+			}
+
+		} catch (SQLException e) {
+			// TODO: handle exception
+			System.out.println("error al obtener los datos del producto;" + e);
+		}
+
+	}
+	
+	//metodo para presentar informacion de la tabla
+	private void listaTablaProductos() {
+		this.modeloDatosProductos.setRowCount(listaProductos.size());
+		for(int i = 0; i<listaProductos.size();i++) {
+			this.modeloDatosProductos.setValueAt(i + 1 , i, 0);
+			this.modeloDatosProductos.setValueAt(listaProductos.get(i).getNombre() , i, 1);
+			this.modeloDatosProductos.setValueAt(listaProductos.get(i).getCantidad() , i, 2);
+			this.modeloDatosProductos.setValueAt(listaProductos.get(i).getPrecioUnitario() , i, 3);
+			this.modeloDatosProductos.setValueAt(listaProductos.get(i).getSubtotal() , i, 4);
+			this.modeloDatosProductos.setValueAt(listaProductos.get(i).getDescuento() , i, 5);
+			this.modeloDatosProductos.setValueAt(listaProductos.get(i).getIva() , i, 6);
+			this.modeloDatosProductos.setValueAt(listaProductos.get(i).getTotalPagar() , i, 7);
+			this.modeloDatosProductos.setValueAt("Eliminar" , i, 8);
+		}
+		
+		jTable_Productos.setModel(modeloDatosProductos);
+	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		
-		if(e.getSource() == btnBuscar_cliente) {
-			
+
+		if (e.getSource() == btnBuscar_cliente) {
+
 			String clienteBuscar = txt_cliente_buscar.getText().trim();
 			Connection cn = Conexion.conectar();
-			String sql = "select apellido from tb_cliente where cedula = '"+clienteBuscar+"'";
+			String sql = "select apellido from tb_cliente where cedula = '" + clienteBuscar + "'";
 			Statement st;
-			
+
 			try {
-				
+
 				st = cn.createStatement();
 				ResultSet rs = st.executeQuery(sql);
-				if(rs.next()) {
+				if (rs.next()) {
 					comboBox_cliente.setSelectedItem(rs.getString("apellido"));
 					txt_cliente_buscar.setText("");
-				}else {
+				} else {
 					comboBox_cliente.setSelectedItem("Seleccione cliente:");
 					JOptionPane.showMessageDialog(null, "No se encontro ese cliente");
 					txt_cliente_buscar.setText("");
 				}
 				cn.close();
-				
+
 			} catch (SQLException e2) {
 				// TODO: handle exception
 				System.out.println("Error al buscar cliente " + e2);
 			}
-			
+
 		}
-		
+
+		if (e.getSource() == btn_anadir) {
+			String combo = this.comboBox_producto.getSelectedItem().toString();
+			if (combo.equalsIgnoreCase("Seleccione producto:")) {
+				JOptionPane.showMessageDialog(null, "Seleccione un producto");
+			} else {
+
+				// validar que ingresa una cantidad
+				if (!txt_cantidadFacturacion.getText().isEmpty()) {
+					// validar que no ingrese caracteres no numericos
+					boolean validacion = validar(txt_cantidadFacturacion.getText());
+					if (validacion == true) {
+						// validar que la cantidad sea mayor que 0
+						if (Integer.parseInt(txt_cantidadFacturacion.getText()) > 0) {
+							cantidad = Integer.parseInt(txt_cantidadFacturacion.getText());
+							// ejecutar metodo para obtener datos del producto
+							this.DatosDelProducto();
+							// validar que la cantidad de productos seleccionado no sea mayor al stock de la bbdd
+							if(cantidad <= cantidadProductoBBDD) {
+								
+								subTotal = precioUnitario * cantidad;
+								totalPagar = subTotal + iva + descuento;
+								
+								//redondear decimales
+								subTotal = (double) Math.round(subTotal * 100 ) / 100;
+								iva = (double) Math.round(iva * 100 ) / 100;
+								descuento = (double) Math.round(descuento * 100 ) / 100;
+								totalPagar = (double) Math.round(totalPagar * 100 ) / 100;
+								
+								// crear un nuevo producto
+								producto = new DetalleVenta(auxIdDetalle,
+										1,
+										idProducto,
+										nombre,
+										Integer.parseInt(txt_cantidadFacturacion.getText()),
+										precioUnitario,
+										subTotal,
+										descuento,
+										iva,
+										totalPagar,
+										1);
+								
+								listaProductos.add(producto);
+								JOptionPane.showMessageDialog(null, "Producto agregado");
+								auxIdDetalle++;
+								txt_cantidadFacturacion.setText("");
+								this.cargarComboProductos();
+								
+								
+								
+							}else {
+								JOptionPane.showMessageDialog(null, "La cantidad supera el stock");
+							}
+
+						} else {
+							JOptionPane.showMessageDialog(null, "Ingresa una cantidad mayor que 0");
+						}
+					} else {
+						JOptionPane.showMessageDialog(null, "No se admiten caracteres no numericos");
+					}
+
+				} else {
+					JOptionPane.showMessageDialog(null, "Ingrese una cantidad");
+				}
+
+			}
+			
+			this.listaTablaProductos();
+		}
+
 	}
+	
+	
 
 }
