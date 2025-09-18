@@ -8,9 +8,12 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.util.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import javax.swing.Icon;
@@ -30,6 +33,8 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableModel;
 
 import conexion.Conexion;
+import controlador.Ctrl_RegistrarVenta;
+import modelo.CabeceraVenta;
 import modelo.DetalleVenta;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -77,6 +82,8 @@ public class InterFacturacion extends JInternalFrame implements ActionListener, 
 	// lista para detallesVenta de los productos
 	ArrayList<DetalleVenta> listaProductos = new ArrayList<DetalleVenta>();
 	private DetalleVenta producto;
+
+	private int idCliente = 0;
 
 	private int idProducto = 0;
 	private String nombre = "";
@@ -615,6 +622,157 @@ public class InterFacturacion extends JInternalFrame implements ActionListener, 
 
 		}
 
+		if (e.getSource() == btn_registrarVenta) {
+
+			CabeceraVenta cabeceraVenta = new CabeceraVenta();
+			DetalleVenta detalleVenta = new DetalleVenta();
+			Ctrl_RegistrarVenta controlVenta = new Ctrl_RegistrarVenta();
+
+			String fechaActual = "";
+			Date date = new Date();
+			fechaActual = new SimpleDateFormat("yyyy/MM/dd").format(date);
+
+			if (!comboBox_cliente.getSelectedItem().equals("Seleccione cliente:")) {
+
+				if (listaProductos.size() > 0) {
+
+					// metodo para obtener el id del cliente
+					this.ObtenerIdCliente();
+
+					// registrar cabecera de venta
+					cabeceraVenta.setIdCabeceraVenta(0);
+					cabeceraVenta.setIdCliente(idCliente);
+					cabeceraVenta.setValorPagar(Double.parseDouble(txt_totalapagar.getText()));
+					cabeceraVenta.setFechaVenta(fechaActual);
+					cabeceraVenta.setEstado(1);
+
+					if (controlVenta.guardar(cabeceraVenta)) {
+						JOptionPane.showMessageDialog(null, "Venta registrada");
+
+						// guardar detalles de venta
+						for (DetalleVenta elemento : listaProductos) {
+							detalleVenta.setIdDetalleVenta(0);
+							detalleVenta.setIdCabeceraVenta(0);
+							detalleVenta.setIdProducto(elemento.getIdProducto());
+							detalleVenta.setCantidad(elemento.getCantidad());
+							detalleVenta.setPrecioUnitario(elemento.getPrecioUnitario());
+							detalleVenta.setSubtotal(elemento.getSubtotal());
+							detalleVenta.setDescuento(elemento.getDescuento());
+							detalleVenta.setIva(elemento.getIva());
+							detalleVenta.setTotalPagar(elemento.getTotalPagar());
+							detalleVenta.setEstado(1);
+
+							if (controlVenta.guardarDetalle(detalleVenta)) {
+								System.out.println("Venta registrada correctamente");
+								
+								txt_subtotal.setText("0.0");
+								txt_descuento.setText("0.0");
+								txt_iva.setText("0.0");
+								txt_totalapagar.setText("0.0");
+								txt_efectivo.setText("0.0");
+								txt_cambio.setText("0.0");
+								auxIdDetalle = 1;
+								
+								this.cargarComboClientes();
+								this.cargarComboProductos();
+								
+								this.restarStockProductos(elemento.getIdProducto(), elemento.getCantidad());
+								
+								
+								
+
+							} else {
+								JOptionPane.showMessageDialog(null, "Error al guardar detalle de venta.");
+							}
+
+						}
+						
+						//vaciar lista productos
+						listaProductos.clear();
+						listaTablaProductos();
+
+					} else {
+						JOptionPane.showMessageDialog(null, "Error al guardar cabecera de venta.");
+					}
+
+				} else {
+					JOptionPane.showMessageDialog(null, "Seleccione un producto");
+				}
+
+			} else {
+				JOptionPane.showMessageDialog(null, "Seleccione un cliente");
+			}
+
+		}
+
+	}
+	
+	
+	// metodo para restar el stock de los productos vendidos
+	private void restarStockProductos(int idProducto , int cantidad) {
+		// TODO Auto-generated method stub
+		int cantidadProductosBBDD = 0;
+		try {
+			Connection cn = Conexion.conectar();
+			String sql = "select idProducto,cantidad from tb_producto where idProducto = '"+idProducto+"'";
+			Statement st;
+			st = cn.createStatement();
+			ResultSet rs = st.executeQuery(sql);
+			
+			while(rs.next()) {
+				cantidadProductosBBDD = rs.getInt("cantidad");
+				
+			}
+			
+			cn.close();
+			
+		} catch (SQLException e) {
+			// TODO: handle exception
+			System.out.println("Error al restar cantidad" + e);
+		}
+		
+		try {
+			Connection cn = Conexion.conectar();
+			PreparedStatement consulta = cn.prepareStatement("update tb_producto set cantidad=? where idProducto = '"+idProducto+"'");
+			int cantidadNueva = cantidadProductosBBDD - cantidad;
+			
+			consulta.setInt(1, cantidadNueva);
+			
+			if(consulta.executeUpdate() > 0) {
+				System.out.println("se ha actualizado el stock");
+			}
+			cn.close();
+			
+		} catch (SQLException e2) {
+			// TODO: handle exception
+			System.out.println("Error al restar cantidad 22" + e2);
+		}
+		
+		
+	}
+
+	// obtener id cliente
+	private void ObtenerIdCliente() {
+		// TODO Auto-generated method stub
+		try {
+
+			String sql = "select * from tb_cliente where apellido = '" + this.comboBox_cliente.getSelectedItem() + "'";
+			Connection cn = Conexion.conectar();
+			Statement st;
+			st = cn.createStatement();
+			ResultSet rs = st.executeQuery(sql);
+
+			while (rs.next()) {
+
+				idCliente = rs.getInt("idCliente");
+
+			}
+
+		} catch (SQLException e) {
+			// TODO: handle exception
+			System.out.println("Error al obtener la idCliente: " + e);
+		}
+
 	}
 
 	// metodo para calcular total a pagar de todos los productos agregados
@@ -651,27 +809,23 @@ public class InterFacturacion extends JInternalFrame implements ActionListener, 
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-	    int fila = jTable_Productos.rowAtPoint(e.getPoint());
-	    int columna = jTable_Productos.columnAtPoint(e.getPoint());
+		int fila = jTable_Productos.rowAtPoint(e.getPoint());
+		int columna = jTable_Productos.columnAtPoint(e.getPoint());
 
-	    // Solo si hizo clic en la columna "Accion"
-	    if (fila >= 0 && columna == 8) {
-	        int opcion = JOptionPane.showConfirmDialog(
-	                null,
-	                "¿Eliminar producto?",
-	                "Confirmar eliminación",
-	                JOptionPane.YES_NO_OPTION
-	        );
+		// Solo si hizo clic en la columna "Accion"
+		if (fila >= 0 && columna == 8) {
+			int opcion = JOptionPane.showConfirmDialog(null, "¿Eliminar producto?", "Confirmar eliminación",
+					JOptionPane.YES_NO_OPTION);
 
-	        if (opcion == JOptionPane.YES_OPTION) {
-	            // 🔴 Eliminar usando la posición de la fila
-	            listaProductos.remove(fila);
+			if (opcion == JOptionPane.YES_OPTION) {
+				// Eliminar usando la posición de la fila
+				listaProductos.remove(fila);
 
-	            // 🔄 Actualizar tabla y totales
-	            this.CalcularTotalPagar();
-	            this.listaTablaProductos();
-	        }
-	    }
+				// Actualizar tabla y totales
+				this.CalcularTotalPagar();
+				this.listaTablaProductos();
+			}
+		}
 	}
 
 	@Override
