@@ -24,7 +24,6 @@ public class FrmMenu extends JFrame implements ActionListener {
     private JMenu menuCategoria;
     private JMenu menuFacturar;
     private JMenu menuReportes;
-    private JMenu menuHistorial;
     private JMenu menuCerrarSesion;
 
     // Items Usuario
@@ -54,8 +53,7 @@ public class FrmMenu extends JFrame implements ActionListener {
     private JMenuItem mntmReportesProductos;
     private JMenuItem mntmReportesVentas;
 
-    // Items Historial
-    private JMenuItem mntmVerHistorial;
+    
 
     // Items Cerrar Sesión
     private JMenuItem mntmCerrarSesion;
@@ -200,15 +198,7 @@ public class FrmMenu extends JFrame implements ActionListener {
             new ImageIcon(FrmMenu.class.getResource("/img/carrito.png")));
         menuReportes.add(mntmReportesVentas);
 
-        // ================== MENU HISTORIAL ==================
-        menuHistorial = new JMenu("Historial");
-        menuHistorial.setFont(new Font("Tahoma", Font.BOLD, 15));
-        menuHistorial.setIcon(new ImageIcon(FrmMenu.class.getResource("/img/historial1.png")));
-        menuBar.add(menuHistorial);
-
-        mntmVerHistorial = new JMenuItem("Ver Historial",
-            new ImageIcon(FrmMenu.class.getResource("/img/anadir.png")));
-        menuHistorial.add(mntmVerHistorial);
+       
 
         // ================== MENU CERRAR SESIÓN ==================
         menuCerrarSesion = new JMenu("Cerrar Sesión");
@@ -220,6 +210,8 @@ public class FrmMenu extends JFrame implements ActionListener {
             new ImageIcon(FrmMenu.class.getResource("/img/cerrar-sesion.png")));
         mntmCerrarSesion.addActionListener(this);
         menuCerrarSesion.add(mntmCerrarSesion);
+        
+        
     }
 
 	@Override

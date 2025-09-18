@@ -31,8 +31,11 @@ import javax.swing.table.DefaultTableModel;
 
 import conexion.Conexion;
 import modelo.DetalleVenta;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
-public class InterFacturacion extends JInternalFrame implements ActionListener {
+public class InterFacturacion extends JInternalFrame implements ActionListener, MouseListener {
 
 	private static final long serialVersionUID = 1L;
 
@@ -70,8 +73,7 @@ public class InterFacturacion extends JInternalFrame implements ActionListener {
 	private JButton btn_anadir;
 
 	private DefaultTableModel modeloDatosProductos;
-	
-	
+
 	// lista para detallesVenta de los productos
 	ArrayList<DetalleVenta> listaProductos = new ArrayList<DetalleVenta>();
 	private DetalleVenta producto;
@@ -88,7 +90,16 @@ public class InterFacturacion extends JInternalFrame implements ActionListener {
 	private double iva = 0.0;
 	private double totalPagar = 0.0;
 
+	// variables para calculos globales
+	private double subtotalGeneral = 0.0;
+	private double descuentoGeneral = 0.0;
+	private double IvaGeneral = 0.0;
+	private double totalPagarGeneral = 0.0;
+
+	// fin de variables gloables
+
 	private int auxIdDetalle = 1; // id ddel detalle de venta
+	private int idArrayList;
 
 	/**
 	 * Create the frame.
@@ -174,6 +185,8 @@ public class InterFacturacion extends JInternalFrame implements ActionListener {
 
 		jTable_Productos = new JTable();
 		JScrollPane scroll = new JScrollPane(jTable_Productos);
+		jTable_Productos.addMouseListener(this);
+		scroll.addMouseListener(this);
 		scroll.setBounds(10, 11, 744, 183);
 		panel.add(scroll);
 
@@ -220,6 +233,7 @@ public class InterFacturacion extends JInternalFrame implements ActionListener {
 		panel_1.add(lblNewLabel_2_3_2);
 
 		txt_subtotal = new JTextField();
+		txt_subtotal.setForeground(new Color(0, 0, 0));
 		txt_subtotal.setEnabled(false);
 		txt_subtotal.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		txt_subtotal.setBounds(119, 9, 138, 20);
@@ -227,6 +241,7 @@ public class InterFacturacion extends JInternalFrame implements ActionListener {
 		txt_subtotal.setColumns(10);
 
 		txt_descuento = new JTextField();
+		txt_descuento.setForeground(new Color(0, 0, 0));
 		txt_descuento.setEnabled(false);
 		txt_descuento.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		txt_descuento.setColumns(10);
@@ -234,6 +249,7 @@ public class InterFacturacion extends JInternalFrame implements ActionListener {
 		panel_1.add(txt_descuento);
 
 		txt_iva = new JTextField();
+		txt_iva.setForeground(new Color(0, 0, 0));
 		txt_iva.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		txt_iva.setEnabled(false);
 		txt_iva.setColumns(10);
@@ -241,6 +257,7 @@ public class InterFacturacion extends JInternalFrame implements ActionListener {
 		panel_1.add(txt_iva);
 
 		txt_totalapagar = new JTextField();
+		txt_totalapagar.setForeground(new Color(0, 0, 0));
 		txt_totalapagar.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		txt_totalapagar.setEnabled(false);
 		txt_totalapagar.setColumns(10);
@@ -283,11 +300,18 @@ public class InterFacturacion extends JInternalFrame implements ActionListener {
 		jLabel_wallpaper.setIcon(icono);
 		this.repaint();
 
+		txt_subtotal.setText("0");
+		txt_descuento.setText("0");
+		txt_iva.setText("0");
+		txt_totalapagar.setText("0");
+
+		txt_efectivo.setEnabled(false);
+		btn_calcularCambio.setEnabled(false);
+
 		cargarComboClientes();
 		cargarComboProductos();
 		inicializarTablaProducto();
 		listaTablaProductos();
-		
 
 	}
 
@@ -376,6 +400,22 @@ public class InterFacturacion extends JInternalFrame implements ActionListener {
 
 	}
 
+	// metodo para validar que el usuario no ingrese caraacteres no numericos
+	private boolean validarDouble(String valor) {
+		// TODO Auto-generated method stub
+		try {
+			Double num = Double.parseDouble(valor);
+			return true;
+
+		} catch (NumberFormatException e) {
+			// TODO: handle exception
+
+			System.out.println("error al validar" + e);
+			return false;
+		}
+
+	}
+
 	// metodo para calcular iva
 	private double calcularIva(double precio, int porcentajeIva) {
 		int p_iva = porcentajeIva;
@@ -409,8 +449,7 @@ public class InterFacturacion extends JInternalFrame implements ActionListener {
 
 		try {
 
-			String sql = "select * from tb_producto  where nombre = '" + this.comboBox_producto.getSelectedItem()
-					+ "'";
+			String sql = "select * from tb_producto  where nombre = '" + this.comboBox_producto.getSelectedItem() + "'";
 			Connection cn = Conexion.conectar();
 			Statement st;
 			st = cn.createStatement();
@@ -432,22 +471,22 @@ public class InterFacturacion extends JInternalFrame implements ActionListener {
 		}
 
 	}
-	
-	//metodo para presentar informacion de la tabla
+
+	// metodo para presentar informacion de la tabla
 	private void listaTablaProductos() {
 		this.modeloDatosProductos.setRowCount(listaProductos.size());
-		for(int i = 0; i<listaProductos.size();i++) {
-			this.modeloDatosProductos.setValueAt(i + 1 , i, 0);
-			this.modeloDatosProductos.setValueAt(listaProductos.get(i).getNombre() , i, 1);
-			this.modeloDatosProductos.setValueAt(listaProductos.get(i).getCantidad() , i, 2);
-			this.modeloDatosProductos.setValueAt(listaProductos.get(i).getPrecioUnitario() , i, 3);
-			this.modeloDatosProductos.setValueAt(listaProductos.get(i).getSubtotal() , i, 4);
-			this.modeloDatosProductos.setValueAt(listaProductos.get(i).getDescuento() , i, 5);
-			this.modeloDatosProductos.setValueAt(listaProductos.get(i).getIva() , i, 6);
-			this.modeloDatosProductos.setValueAt(listaProductos.get(i).getTotalPagar() , i, 7);
-			this.modeloDatosProductos.setValueAt("Eliminar" , i, 8);
+		for (int i = 0; i < listaProductos.size(); i++) {
+			this.modeloDatosProductos.setValueAt(i + 1, i, 0);
+			this.modeloDatosProductos.setValueAt(listaProductos.get(i).getNombre(), i, 1);
+			this.modeloDatosProductos.setValueAt(listaProductos.get(i).getCantidad(), i, 2);
+			this.modeloDatosProductos.setValueAt(listaProductos.get(i).getPrecioUnitario(), i, 3);
+			this.modeloDatosProductos.setValueAt(listaProductos.get(i).getSubtotal(), i, 4);
+			this.modeloDatosProductos.setValueAt(listaProductos.get(i).getDescuento(), i, 5);
+			this.modeloDatosProductos.setValueAt(listaProductos.get(i).getIva(), i, 6);
+			this.modeloDatosProductos.setValueAt(listaProductos.get(i).getTotalPagar(), i, 7);
+			this.modeloDatosProductos.setValueAt("Eliminar", i, 8);
 		}
-		
+
 		jTable_Productos.setModel(modeloDatosProductos);
 	}
 
@@ -499,40 +538,36 @@ public class InterFacturacion extends JInternalFrame implements ActionListener {
 							cantidad = Integer.parseInt(txt_cantidadFacturacion.getText());
 							// ejecutar metodo para obtener datos del producto
 							this.DatosDelProducto();
-							// validar que la cantidad de productos seleccionado no sea mayor al stock de la bbdd
-							if(cantidad <= cantidadProductoBBDD) {
-								
+							// validar que la cantidad de productos seleccionado no sea mayor al stock de la
+							// bbdd
+							if (cantidad <= cantidadProductoBBDD) {
+
 								subTotal = precioUnitario * cantidad;
 								totalPagar = subTotal + iva + descuento;
-								
-								//redondear decimales
-								subTotal = (double) Math.round(subTotal * 100 ) / 100;
-								iva = (double) Math.round(iva * 100 ) / 100;
-								descuento = (double) Math.round(descuento * 100 ) / 100;
-								totalPagar = (double) Math.round(totalPagar * 100 ) / 100;
-								
+
+								// redondear decimales
+								subTotal = (double) Math.round(subTotal * 100) / 100;
+								iva = (double) Math.round(iva * 100) / 100;
+								descuento = (double) Math.round(descuento * 100) / 100;
+								totalPagar = (double) Math.round(totalPagar * 100) / 100;
+
 								// crear un nuevo producto
-								producto = new DetalleVenta(auxIdDetalle,
-										1,
-										idProducto,
-										nombre,
-										Integer.parseInt(txt_cantidadFacturacion.getText()),
-										precioUnitario,
-										subTotal,
-										descuento,
-										iva,
-										totalPagar,
-										1);
-								
+								producto = new DetalleVenta(auxIdDetalle, 1, idProducto, nombre,
+										Integer.parseInt(txt_cantidadFacturacion.getText()), precioUnitario, subTotal,
+										descuento, iva, totalPagar, 1);
+
 								listaProductos.add(producto);
 								JOptionPane.showMessageDialog(null, "Producto agregado");
 								auxIdDetalle++;
 								txt_cantidadFacturacion.setText("");
 								this.cargarComboProductos();
-								
-								
-								
-							}else {
+
+								this.CalcularTotalPagar();
+
+								txt_efectivo.setEnabled(true);
+								btn_calcularCambio.setEnabled(true);
+
+							} else {
 								JOptionPane.showMessageDialog(null, "La cantidad supera el stock");
 							}
 
@@ -548,12 +583,119 @@ public class InterFacturacion extends JInternalFrame implements ActionListener {
 				}
 
 			}
-			
+
 			this.listaTablaProductos();
 		}
 
+		if (e.getSource() == btn_calcularCambio) {
+
+			if (!txt_efectivo.getText().isEmpty()) {
+				// validacion qeu el usuario no ingrese otro caracteres no numericos
+				boolean validacion = validarDouble(txt_efectivo.getText());
+				if (validacion == true) {
+					// validar que el efectivo sea mayor al total a pagar
+					double efectivo = Double.parseDouble(txt_efectivo.getText().trim());
+					double top = Double.parseDouble(txt_totalapagar.getText().trim());
+					if (efectivo < top) {
+						JOptionPane.showMessageDialog(null, "El dinero efectivo no es suficiente");
+					} else {
+						double cambio = (efectivo - top);
+						double cmb = (double) Math.round(cambio * 100) / 100;
+						String camb = String.valueOf(cmb);
+						txt_cambio.setText(camb);
+					}
+
+				} else {
+					JOptionPane.showMessageDialog(null, "No se admiten caracteres no numericos");
+				}
+
+			} else {
+				JOptionPane.showMessageDialog(null, "Ingrese dinero en efectivo para calcular cambio");
+			}
+
+		}
+
 	}
-	
-	
+
+	// metodo para calcular total a pagar de todos los productos agregados
+	private void CalcularTotalPagar() {
+		// TODO Auto-generated method stub
+
+		// resetear variables
+		subtotalGeneral = 0;
+		descuentoGeneral = 0;
+		IvaGeneral = 0;
+		totalPagarGeneral = 0;
+
+		for (DetalleVenta elemento : listaProductos) {
+			subtotalGeneral += elemento.getSubtotal();
+			descuentoGeneral += elemento.getDescuento();
+			IvaGeneral += elemento.getIva();
+			totalPagarGeneral += elemento.getTotalPagar();
+		}
+
+		// redondear decimales
+		subtotalGeneral = (double) Math.round(subtotalGeneral * 100) / 100;
+		descuentoGeneral = (double) Math.round(descuentoGeneral * 100) / 100;
+		IvaGeneral = (double) Math.round(IvaGeneral * 100) / 100;
+		totalPagarGeneral = (double) Math.round(totalPagarGeneral * 100) / 100;
+
+		// enviar datos a la vista
+
+		txt_subtotal.setText(String.valueOf(subtotalGeneral));
+		txt_iva.setText(String.valueOf(IvaGeneral));
+		txt_descuento.setText(String.valueOf(descuentoGeneral));
+		txt_totalapagar.setText(String.valueOf(totalPagarGeneral));
+
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+	    int fila = jTable_Productos.rowAtPoint(e.getPoint());
+	    int columna = jTable_Productos.columnAtPoint(e.getPoint());
+
+	    // Solo si hizo clic en la columna "Accion"
+	    if (fila >= 0 && columna == 8) {
+	        int opcion = JOptionPane.showConfirmDialog(
+	                null,
+	                "¿Eliminar producto?",
+	                "Confirmar eliminación",
+	                JOptionPane.YES_NO_OPTION
+	        );
+
+	        if (opcion == JOptionPane.YES_OPTION) {
+	            // 🔴 Eliminar usando la posición de la fila
+	            listaProductos.remove(fila);
+
+	            // 🔄 Actualizar tabla y totales
+	            this.CalcularTotalPagar();
+	            this.listaTablaProductos();
+	        }
+	    }
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
 
 }
