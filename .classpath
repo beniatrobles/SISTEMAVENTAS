@@ -7,5 +7,6 @@
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="src/conector/mysql-connector-java-5.1.46-bin.jar"/>
+	<classpathentry kind="lib" path="src/conector/itext5-itextpdf-5.5.12.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

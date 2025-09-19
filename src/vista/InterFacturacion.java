@@ -34,6 +34,7 @@ import javax.swing.table.DefaultTableModel;
 
 import conexion.Conexion;
 import controlador.Ctrl_RegistrarVenta;
+import controlador.VentaPDF;
 import modelo.CabeceraVenta;
 import modelo.DetalleVenta;
 import java.awt.event.MouseAdapter;
@@ -63,11 +64,11 @@ public class InterFacturacion extends JInternalFrame implements ActionListener, 
 	private JLabel jLabel_wallpaper;
 	private JTextField txt_cantidadFacturacion;
 	private JTextField txt_cliente_buscar;
-	private JTable jTable_Productos;
+	public static JTable jTable_Productos;
 	private JTextField txt_subtotal;
 	private JTextField txt_descuento;
 	private JTextField txt_iva;
-	private JTextField txt_totalapagar;
+	public static JTextField txt_totalapagar;
 	private JTextField txt_efectivo;
 	private JTextField txt_cambio;
 	private JComboBox<String> comboBox_cliente;
@@ -77,7 +78,8 @@ public class InterFacturacion extends JInternalFrame implements ActionListener, 
 	private JButton btn_registrarVenta;
 	private JButton btn_anadir;
 
-	private DefaultTableModel modeloDatosProductos;
+	public static DefaultTableModel modeloDatosProductos;
+	public static JScrollPane scroll;
 
 	// lista para detallesVenta de los productos
 	ArrayList<DetalleVenta> listaProductos = new ArrayList<DetalleVenta>();
@@ -107,6 +109,7 @@ public class InterFacturacion extends JInternalFrame implements ActionListener, 
 
 	private int auxIdDetalle = 1; // id ddel detalle de venta
 	private int idArrayList;
+	
 
 	/**
 	 * Create the frame.
@@ -191,7 +194,7 @@ public class InterFacturacion extends JInternalFrame implements ActionListener, 
 		panel.setLayout(null);
 
 		jTable_Productos = new JTable();
-		JScrollPane scroll = new JScrollPane(jTable_Productos);
+		scroll = new JScrollPane(jTable_Productos);
 		jTable_Productos.addMouseListener(this);
 		scroll.addMouseListener(this);
 		scroll.setBounds(10, 11, 744, 183);
@@ -677,6 +680,12 @@ public class InterFacturacion extends JInternalFrame implements ActionListener, 
 								this.cargarComboProductos();
 								
 								this.restarStockProductos(elemento.getIdProducto(), elemento.getCantidad());
+								
+								// generar la factura(PDF)
+								VentaPDF pdf = new VentaPDF();
+								pdf.DatosCliente(idCliente);
+								pdf.generarFacturaPDF();
+								
 								
 								
 								
