@@ -9,6 +9,7 @@ import java.sql.Statement;
 import conexion.Conexion;
 import modelo.CabeceraVenta;
 import modelo.DetalleVenta;
+import modelo.Producto;
 
 
 
@@ -88,5 +89,29 @@ public class Ctrl_RegistrarVenta {
 		return respuesta;
 
 	}
+	
+	public boolean actualizar(CabeceraVenta objeto , int idCabeceraVenta) {
+        boolean respuesta = false;
+        Connection cn = Conexion.conectar();
+
+        try {
+            PreparedStatement pst = cn.prepareStatement(
+                "update tb_cabecera_venta set idCliente = ?, estado = ? where idCabeceraVenta = '"+idCabeceraVenta+"'"
+            );
+
+            pst.setInt(1, objeto.getIdCliente());
+            pst.setInt(2, objeto.getEstado());
+
+            if (pst.executeUpdate() > 0) {
+                respuesta = true;
+            }
+
+            cn.close();
+        } catch (SQLException e) {
+            System.out.println("Error al actualizar cabecera venta: " + e);
+        }
+
+        return respuesta;
+    }
 
 }

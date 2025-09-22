@@ -174,6 +174,7 @@ public class FrmMenu extends JFrame implements ActionListener {
 
         mntmGestionarVentas = new JMenuItem("Gestionar Ventas",
             new ImageIcon(FrmMenu.class.getResource("/img/configuraciones.png")));
+        mntmGestionarVentas.addActionListener(this);
         menuFacturar.add(mntmGestionarVentas);
 
         // ================== MENU REPORTES ==================
@@ -293,6 +294,12 @@ public class FrmMenu extends JFrame implements ActionListener {
 			InterFacturacion interFact = new InterFacturacion();
 			jDesktopPane_menu.add(interFact);
 			interFact.setVisible(true);
+		}
+		
+		if(e.getSource() == mntmGestionarVentas) {
+			InterGestionarVentas interVentas = new InterGestionarVentas();
+			jDesktopPane_menu.add(interVentas);
+			interVentas.setVisible(true);
 		}
 		
 		
