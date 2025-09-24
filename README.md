@@ -25,3 +25,8 @@ Para ejecutar el proyecto necesitas:
 1. Clona este repositorio:
    ```bash
    git clone https://github.com/tuusuario/sistema-ventas.git
+   ````
+
+## Importar BBDD
+
+Dentro de la carpeta database esta el script para crear la bbdd con sus respectibas tablas
