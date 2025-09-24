@@ -33,6 +33,10 @@ Dentro de la carpeta database esta el script para crear la bbdd con sus respecti
 
 ## Configurar la conexion
 
-En src/conexion/Conexion.java configurar la conexion con la BBDD. Connection cn = DriverManager.getConnection(
+En src/conexion/Conexion.java configurar la conexion con la BBDD. 
+```bash
+Connection cn = DriverManager.getConnection(
     "jdbc:mysql://localhost/bd_sistema_ventas", "root", ""
-); aqui cambiar los parametros con la ruta , usuario y contraseña que tu pongas
+); 
+````
+aqui cambiar los parametros con la ruta , usuario y contraseña que tu pongas
