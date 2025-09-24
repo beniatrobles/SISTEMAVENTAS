@@ -32,10 +32,9 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableModel;
 
 import conexion.Conexion;
-import controlador.Ctrl_Cliente;
 import controlador.Ctrl_RegistrarVenta;
 import modelo.CabeceraVenta;
-import modelo.Cliente;
+
 
 public class InterGestionarVentas extends JInternalFrame implements ActionListener {
 
@@ -154,17 +153,17 @@ public class InterGestionarVentas extends JInternalFrame implements ActionListen
 		comboBox_cliente.setBounds(418, 10, 165, 22);
 		panel_2.add(comboBox_cliente);
 		comboBox_cliente.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		comboBox_cliente.setModel(new DefaultComboBoxModel(new String[] { "Selecciona cliente:" }));
+		comboBox_cliente.setModel(new DefaultComboBoxModel<String>(new String[] { "Selecciona cliente:" }));
 
 		comboBox_estado = new JComboBox<String>();
-		comboBox_estado.setModel(new DefaultComboBoxModel(new String[] { "Activo", "Inactivo" }));
+		comboBox_estado.setModel(new DefaultComboBoxModel<String>(new String[] { "Activo", "Inactivo" }));
 		comboBox_estado.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		comboBox_estado.setBounds(418, 39, 165, 22);
 		panel_2.add(comboBox_estado);
 
 		this.setSize(new Dimension(900, 500));
 
-		String titulo = "Gestionar Clientes";
+		
 		this.setTitle("Gestionar Ventas");
 
 		// insertar omagen en el jlabel

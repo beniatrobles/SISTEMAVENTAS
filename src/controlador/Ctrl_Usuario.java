@@ -9,7 +9,7 @@ import java.sql.Statement;
 import javax.swing.JOptionPane;
 
 import conexion.Conexion;
-import modelo.Categoria;
+
 import modelo.Usuario;
 
 public class Ctrl_Usuario {

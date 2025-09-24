@@ -40,13 +40,13 @@ public class InterCliente extends JInternalFrame implements ActionListener {
 
 	private JLabel jLabel_wallpaper;
 	private JButton btnGuardar;
-	private JTextField txt_nombreProducto;
+	
 	private JTextField txt_telefonoCliente;
 	private JTextField txt_nombreCliente;
-	private JTextField txt_cantidadProducto;
+	
 	private JTextField txt_direccionCliente;
 	private JTextField txt_apellidoCliente;
-	private JTextField txt_precioProducto;
+	
 	private JTextField txt_cedulaCliente;
 
 	/**

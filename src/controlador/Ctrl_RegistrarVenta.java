@@ -9,7 +9,6 @@ import java.sql.Statement;
 import conexion.Conexion;
 import modelo.CabeceraVenta;
 import modelo.DetalleVenta;
-import modelo.Producto;
 
 
 

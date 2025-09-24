@@ -1,7 +1,7 @@
 package vista;
 
 import java.awt.Component;
-import java.awt.Dimension;
+
 import java.awt.EventQueue;
 
 import javax.swing.ImageIcon;
@@ -175,8 +175,9 @@ public class InterActualizarStock extends JInternalFrame implements ActionListen
 	// metodo valicion caraacteres no numericos
 
 	private boolean validar(String valor) {
-		int num;
+		
 		try {
+			int num;
 			num = Integer.parseInt(valor);
 			return true;
 		} catch (NumberFormatException e) {

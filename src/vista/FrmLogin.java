@@ -7,12 +7,13 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 
+import conexion.Conexion;
 import controlador.Ctrl_Usuario;
 import modelo.Usuario;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
+
 import java.awt.Color;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -51,6 +52,10 @@ public class FrmLogin extends JFrame implements ActionListener {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					
+					Conexion conexion = new Conexion();
+		            conexion.crearUsuarioPorDefecto();
+					
 					FrmLogin frame = new FrmLogin();
 					frame.setVisible(true);
 				} catch (Exception e) {
@@ -139,6 +144,7 @@ public class FrmLogin extends JFrame implements ActionListener {
 		panel_form.add(btnIniciarSesion);
 	}
 
+	@SuppressWarnings("deprecation")
 	private void login() {
 		if (!txtUsuario.getText().isEmpty() && !txtPassword.getText().isEmpty()) {
 

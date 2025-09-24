@@ -5,7 +5,11 @@ import java.awt.*;
 
 public class DesktopConFondo extends JDesktopPane {
 
-    private Image imagen;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private Image imagen;
 
     public DesktopConFondo(String rutaImagen) {
         // Cargar imagen desde el package "img"
