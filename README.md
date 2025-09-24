@@ -29,7 +29,7 @@ Para ejecutar el proyecto necesitas:
 
 ## Importar BBDD
 
-Dentro de la carpeta database esta el script para crear la bbdd con sus respectibas tablas
+Dentro de la carpeta database esta el script para crear la bbdd con sus respectivas tablas
 
 ## Configurar la conexion
 
