@@ -39,4 +39,4 @@ Connection cn = DriverManager.getConnection(
     "jdbc:mysql://localhost/bd_sistema_ventas", "root", ""
 ); 
 ````
-aqui cambiar los parametros con la ruta , usuario y contraseña que tu pongas
+Aqui cambiar los parametros con la ruta , usuario y contraseña.
