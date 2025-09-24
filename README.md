@@ -40,3 +40,8 @@ Connection cn = DriverManager.getConnection(
 ); 
 ````
 Aqui cambiar los parametros con la ruta , usuario y contraseña.
+
+## Crear Usuario por defecto
+
+Cuando inicies la clase FRMLogin.java o exportes el proyecto como .jar, al iniciar la app se creara un usuario por defecto.
+
